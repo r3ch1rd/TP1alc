@@ -2,6 +2,7 @@ import numpy as np
 import networkx as nx
 from scipy import linalg 
 import time
+import matplotlib.pyplot as plt
 
 def leer_archivo(input_file_path):
 
@@ -69,7 +70,7 @@ def sumColumna(A, col):
 
 def calcularRanking(W, p):
     npages = W.shape[0]
-    rnk = np.arange(0, npages) # ind{k] = i, la pagina k tienen el iesimo orden en la lista.
+    rnk = np.arange(0,npages) # ind{k] = i, la pagina k tienen el iesimo orden en la lista.
     scr = np.zeros(npages) # scr[k] = alpha, la pagina k tiene un score de alpha 
 
     #Definimos D
@@ -87,7 +88,17 @@ def calcularRanking(W, p):
     
     x = resolverLU(A, e)
     scr = np.dot(1 / np.sum(x),x) 
-    #
+
+    #En base al scr, hacemos el rnk
+    for i in range(npages):
+        pos = 1
+        for j in range(npages):
+            if scr[j] > scr[i]:    #Decidimos que en el caso que haya dos scores iguales, se les asignará la misma posición en el ranking
+                pos += 1           #La siguiente pos no tendrá en cueta el empate y considerará la cantidad de scores superiores
+            else:                  #Un ejemplo sería (1,1,1,5,4,6) donde los primeros 3 empataron, por ende la siguiente posición es el 4
+                pass
+        rnk[i] = pos
+        
     return rnk, scr
 
 def obtenerMaximoRankingScore(M, p):
@@ -97,3 +108,25 @@ def obtenerMaximoRankingScore(M, p):
     output = np.max(scr)
     
     return output
+
+
+def calcularTiempoLinks(W): #Recibe una matriz W y retorna una dupla con; la cantidad de links y el tiempo que tardó
+    start = time.time()
+    calcularRanking(W, 0.5)
+    end = time.time()
+
+    links = 0
+    for i in range(W.shape[0]):
+        for j in range(W.shape[0]):
+            if W[i,j] == 1:
+                links += 1
+            
+    return (links,end-start)
+
+def calcularTiempoPag(W): #Recibe una matriz W y retorna una dupla con; la cantidad de paginas y el tiempo que tardó
+    start = time.time()
+    calcularRanking(W, 0.5)
+    end = time.time()
+    return (W.shape[0],end-start)
+
+
