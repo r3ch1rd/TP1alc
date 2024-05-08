@@ -97,24 +97,3 @@ def obtenerMaximoRankingScore(M, p):
     output = np.max(scr)
     
     return output
-
-def obtenerMaximoRankingScore(M, p):
-    output = -np.inf
-    # calculo el ranking y los scores
-    rnk, scr = calcularRanking(M, p)
-    output = np.max(scr)
-    
-    return output
-
-W =leer_archivo('/home/clinux01/Documentos/Recursos TP1-20240507/template-alumnos/template-alumnos/tests/test_30_segundos.txt')
-
-inicio = time.time()
-obtenerMaximoRankingScore(W, 0.5)
-final = time.time()
-tiempo = final - inicio
-
-np.isclose(obtenerMaximoRankingScore(W, 0.5), 0.1811, atol=1e-4)
-
-ninguno_conectado = np.array([[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0]])
-
-dibujarGrafo(ninguno_conectado)
