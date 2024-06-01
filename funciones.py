@@ -87,7 +87,7 @@ def calcularRanking(W, p):
     A = np.identity(npages) - p * np.dot(W,D) 
     
     x = resolverLU(A, e)
-    scr = np.dot(1 / np.sum(x),x) 
+    scr = (1 / np.sum(x))*x
     scr.round(12, scr) #Limita la cantidad de decimales a 6 porque daba errores
 
     #En base al scr, hacemos el rnk
