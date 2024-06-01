@@ -70,7 +70,7 @@ def sumColumna(A, col):
 
 def calcularRanking(W, p):
     npages = W.shape[0]
-    rnk = np.arange(0,npages) # ind{k] = i, la pagina k tienen el iesimo orden en la lista.
+    rnk = np.zeros(npages) # ind{k] = i, la pagina k tienen el iesimo orden en la lista.
     scr = np.zeros(npages) # scr[k] = alpha, la pagina k tiene un score de alpha 
 
     #Definimos D
@@ -84,20 +84,23 @@ def calcularRanking(W, p):
     e = np.ones(npages)
     
     #Definimos A
-    A = np.identity(npages) - np.dot(p, np.dot(W,D)) 
+    A = np.identity(npages) - p * np.dot(W,D) 
     
     x = resolverLU(A, e)
     scr = np.dot(1 / np.sum(x),x) 
+    scr.round(12, scr) #Limita la cantidad de decimales a 6 porque daba errores
 
     #En base al scr, hacemos el rnk
-    for i in range(npages):
-        pos = 1
-        for j in range(npages):
-            if scr[j] > scr[i]:    #Decidimos que en el caso que haya dos scores iguales, se les asignará la misma posición en el ranking
-                pos += 1           #La siguiente pos no tendrá en cueta el empate y considerará la cantidad de scores superiores
-            else:                  #Un ejemplo sería (1,1,1,5,4,6) donde los primeros 3 empataron, por ende la siguiente posición es el 4
-                pass
-        rnk[i] = pos
+    for r in range(1, npages+1):   #r es el numero en el ranking 
+        for i in range(npages):    #i recorre todo el scr buscando el menor que los rankeados y mayor que los que no tienen ranking
+            if rnk[i] == 0:
+                mayor = True
+                for j in range(npages):                 #Compara el scr[i] con todos los otros 
+                    if scr[i] < scr[j] and rnk[j] == 0:   #Si scr[i] es menor que alguno de los no rankeados, entonces mayor = false
+                        mayor = False
+                if mayor == True:                       #si mayor == true, entonces rankea al scr[i] y busca el siguiente
+                    rnk[i] = r
+                    break
         
     return rnk, scr
 
